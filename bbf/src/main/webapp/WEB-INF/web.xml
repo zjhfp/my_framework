@@ -39,6 +39,13 @@
 		<servlet-name>bffAdmin</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>initBbfServlet</servlet-name>
+		<servlet-class>com.pan.bbf.init.InitBbfServlet</servlet-class>
+		<load-on-startup>4</load-on-startup>
+	</servlet>
+	
+	
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>

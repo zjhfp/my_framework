@@ -86,6 +86,12 @@
 			<version>${spring.version}</version>
 		</dependency>
   	<!-- spring核心包end -->
+  	<dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>javax.servlet-api</artifactId>
+		<version>${servlet.version}</version>
+		<scope>compile</scope>
+	</dependency>
   	<!-- mybatis begin -->
   	<dependency>
   		<groupId>org.mybatis</groupId>  

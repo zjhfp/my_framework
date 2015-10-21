@@ -13,6 +13,8 @@
 		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 	
+	<bean class="com.pan.bbf.common.utils.SpringHelper" lazy-init="false" />
+	
 	<mvc:interceptors>
 	    <bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">
 	    	<!-- 缓存过期时间 正数表示需要缓存，负数表示不做任何事情（也就是说保留上次的缓存设置） 
