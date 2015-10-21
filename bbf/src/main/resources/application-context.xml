@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+	default-lazy-init="true">
+
+	<!-- 自动扫描且只扫描@Controller -->
+	<context:component-scan base-package="com.pan.bbf.controller" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	<mvc:interceptors>
+	    <bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+	    	<!-- 缓存过期时间 正数表示需要缓存，负数表示不做任何事情（也就是说保留上次的缓存设置） 
+	    		cacheSeconds =0时
+		    		Pragma：no-cache             // HTTP 1.0的不缓存响应头
+		    		Expires：1L                  // useExpiresHeader=true时，HTTP 1.0
+		    		Cache-Control ：no-cache      // useCacheControlHeader=true时，HTTP 1.1
+		    		Cache-Control ：no-store       // useCacheControlNoStore=true时，该设置是防止Firefox缓存
+	    		cacheSeconds < 0 时
+	    			Expires：System.currentTimeMillis() + cacheSeconds * 1000L    // useExpiresHeader=true时，HTTP 1.0
+	    			Cache-Control ：max-age=cacheSeconds                    // useCacheControlHeader=true时，HTTP 1.1
+	    	-->
+	        <property name="cacheSeconds" value="0"/>
+	        <!-- 是否使用HTTP1.0协议过期响应头：如果true则会在响应头添加：Expires：；需要配合cacheSeconds使用； -->
+	        <property name="useExpiresHeader" value="true"/>
+	        <!-- 是否使用HTTP1.1协议的缓存控制响应头，如果true则会在响应头添加；需要配合cacheSeconds使用； -->
+	        <property name="useCacheControlHeader" value="true"/>
+	        <!-- 是否使用HTTP 1.1协议的缓存控制响应头，如果true则会在响应头添加；需要配合cacheSeconds使用； -->
+	        <property name="useCacheControlNoStore" value="true"/>
+	    </bean>
+	</mvc:interceptors>
+	
+	<!-- 文件上传相关 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+	<!-- cookie国际化支持 -->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<!-- 设置cookieName名称，可以根据名称通过js来修改设置，
+		默认的名称为 类名+LOCALE（即：org.springframework.web.servlet.i18n.CookieLocaleResolver.LOCALE-->
+		<property name="cookieName" value="clientlanguage"/>
+		<!-- 设置最大有效时间，如果是-1，则不存储，浏览器关闭后即失效，默认为Integer.MAX_INT-->
+		<property name="cookieMaxAge" value="-1"/>
+		<!-- 设置cookie可见的地址，默认是“/”即对网站所有地址都是可见的，如果设为其它地址，则只有该地址或其后的地址才可见 -->
+		<!-- <property name="cookiePath" value="/"> -->
+	</bean>
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="defaultErrorView">    
+	        <value>error/error</value>  
+	    </property>  
+	    <property name="defaultStatusCode">    
+	        <value>500</value>  
+	    </property> 
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.springframework.web.bind.ServletRequestBindingException">/error/bindException</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- 静态资源访问 -->
+    <mvc:resources mapping="/imgs/**" location="/imgs/" cache-period="31556929"/>
+    <mvc:resources mapping="/libs/**" location="/libs/" cache-period="31556930"/>
+    <mvc:resources mapping="/styles/**" location="/styles/" cache-period="31556931"/>
+    <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <!-- 可在此处添加自定义的数据格式化类 该类需要实现接口：org.springframework.core.convert.converter.Converter -->
+        <!--<property name="converters">
+             <list>
+                <bean class="com.pan.bbf.common.web.CustomerConverter" />
+            </list> 
+        </property>-->
+    </bean>
+    <mvc:view-controller path="/" view-name="redirect:/index"/>
+	<mvc:annotation-driven  conversion-service="conversionService">
+		<mvc:message-converters>
+	            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+	            	<constructor-arg value="UTF-8" />
+	            </bean>
+	            <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+	            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	            	<property name="supportedMediaTypes">
+				      <list>
+				        <value>application/json;charset=UTF-8</value>
+				      </list>
+				     </property>
+				     <property name="objectMapper" ref="customObjectMapper"></property>  
+	            </bean>        
+	    </mvc:message-converters> 
+    </mvc:annotation-driven>
+	<mvc:default-servlet-handler /> 
+	<bean id="customObjectMapper" class="com.pan.bbf.common.CustomObjectMapper"></bean>  
+	<bean id="ssmViewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="contentNegotiationManager" ref="cnManager"/>
+        <property name="viewResolvers">
+        	<list>
+        		 <!-- Default viewClass: JSTL view (JSP with html output) -->
+			    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+			        <property name="prefix" value="/WEB-INF/views/"/>
+					<property name="suffix" value=".jsp"/>
+			    </bean>
+        	</list>
+        </property>
+    </bean>
+  
+    <!-- Simple strategy: only path extension is taken into account -->
+    <bean id="cnManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="favorPathExtension" value="true"/>
+        <property name="ignoreAcceptHeader" value="true"/>
+        <property name="defaultContentType" value="text/html"/>
+        <property name="mediaTypes">
+            <map>
+                <entry key="html" value="text/html" />
+                <entry key="xml" value="application/xml" />
+                <entry key="atom" value="application/atom+xml" />
+                <entry key="xsl" value="application/vnd.ms-excel"/>
+                <entry key="pdf" value="application/pdf"/>
+                <entry key="json" value="application/json"/>
+            </map>
+        </property>
+    </bean>
+</beans>
