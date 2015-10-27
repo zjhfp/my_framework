@@ -5,31 +5,11 @@
     <artifactId>BaseBackendFramework</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>bbf</artifactId>
-  <packaging>war</packaging>
-  
-  <build>
-  	<finalName>bbf</finalName>
-  </build>
+  <artifactId>bbfPaginator</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>com.pan.bbf</groupId>
   		<artifactId>bbfCommon</artifactId>
-  		<version>${bbf.version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.pan.bbf</groupId>
-  		<artifactId>bbfSchedule</artifactId>
-  		<version>${bbf.version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.pan.bbf</groupId>
-  		<artifactId>bbfPaginator</artifactId>
-  		<version>${bbf.version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.pan.bbf</groupId>
-  		<artifactId>bbfUser</artifactId>
   		<version>${bbf.version}</version>
   	</dependency>
   </dependencies>

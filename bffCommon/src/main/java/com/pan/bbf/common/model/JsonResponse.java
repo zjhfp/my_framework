@@ -5,7 +5,7 @@ package com.pan.bbf.common.model;
  * 与前台交互基础类
  * 
  */
-public class JsonRespnse {
+public class JsonResponse {
 
 	/**
      * 状态码

@@ -11,7 +11,7 @@ import org.apache.commons.pool2.impl.GenericObjectPool;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.pan.bbf.common.Exception.BffException;
+import com.pan.bbf.common.exception.BBFException;
 
 public class JSONUtil {
 	public static GenericObjectPool<ObjectMapper> pool;
@@ -50,7 +50,7 @@ public class JSONUtil {
         try {
             return pool.borrowObject();
         } catch (Exception e) {
-            throw new BffException("获取mapper出错", e);
+            throw new BBFException("获取mapper出错", e);
         }
     }
     
@@ -91,7 +91,7 @@ public class JSONUtil {
 
             return map;
         } catch (Exception e) {
-            throw new BffException("json转换错误,json数据：" + jsonValue, e);
+            throw new BBFException("json转换错误,json数据：" + jsonValue, e);
         }
     }
 

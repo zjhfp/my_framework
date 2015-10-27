@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pan.bbf.user.entities.dao.UserMapper">
+	<resultMap type="com.pan.bbf.user.entities.User" id="userResult">
+		<id column="ID" jdbcType="VARCHAR" property="id"></id>
+		<result column="REAL_NAME" jdbcType="VARCHAR" property="realName"></result>
+		<result column="EMAIL" jdbcType="VARCHAR" property="email"></result>
+		<result column="PHONE" jdbcType="VARCHAR" property="phone"></result>
+		<result column="LOGIN_NAME" jdbcType="VARCHAR" property="loginName"></result>
+		<result column="PASSWORD" jdbcType="VARCHAR" property="password"></result>
+		<result column="LAST_LOGIN_DATE" jdbcType="TIMESTAMP" property="lastLoginDate"></result>
+		<result column="IS_LOCKED" jdbcType="INTEGER" property="isLocked"></result>
+		<result column="IS_ADMIN" jdbcType="INTEGER" property="isAdmin"></result>
+		<result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate"></result>
+		<result column="LAST_MODIFIED_DATE" jdbcType="TIMESTAMP" property="lastModifiedDate"></result>
+	</resultMap>
+	
+	<select id="findById" resultMap="userResult">
+		select ID,REAL_NAME,PHONE,LOGIN_NAME,EMAIL,PASSWORD,LAST_LOGIN_DATE,IS_LOCKED,IS_ADMIN,CREATE_DATE,LAST_MODIFIED_DATE
+		from TB_USER where id = #{id}
+	</select>
+	
+	<insert id="insert" parameterType="com.pan.bbf.user.entities.User">
+		<selectKey keyProperty="id" resultType="String" order="BEFORE">
+			select UUID()
+		</selectKey>
+		insert into TB_USER (ID,REAL_NAME,PHONE,EMAIL,LOGIN_NAME,PASSWORD,LAST_LOGIN_DATE,IS_LOCKED,IS_ADMIN,CREATE_DATE,LAST_MODIFIED_DATE)
+		values (#{id},#{realName},#{phone},#{email},#{loginName},#{password},#{lastLoginDate},#{isLocked},#{isAdmin},#{createDate},#{lastModifiedDate})
+	</insert>
+	
+	<select id="findAll" resultMap="userResult">
+		select ID,REAL_NAME,PHONE,LOGIN_NAME,EMAIL,PASSWORD,LAST_LOGIN_DATE,IS_LOCKED,IS_ADMIN,CREATE_DATE,LAST_MODIFIED_DATE
+		from TB_USER
+	</select>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from TB_USER WHERE ID = #{id}
+	</delete>
+	
+	<update id="update" parameterType="com.pan.bbf.user.entities.User">
+		UPDATE TB_USER
+		SET REAL_NAME = #{realName},PHONE = #{phone},EMAIL = #{email},
+		LOGIN_NAME = #{loginName},PASSWORD = #{password},
+		LAST_LOGIN_DATE = #{lastLoginName},IS_LOCKED = #{isLocked},
+		IS_ADMIN = #{isAdmin},
+		CREATE_DATE = #{createDate},LAST_MODIFIED_DATE = #{lastModifiedDate}
+		WHERE ID = #{id}
+	</update>
+	
+	<update id="updateSelective" parameterType="com.pan.bbf.user.entities.User">
+		UPDATE TB_USER
+		<set>
+			<if test="realName != null">
+				REAL_NAME = #{realName},
+			</if>
+		</set>
+		<set>
+			<if test="email != null">
+				EMAIL = #{email},
+			</if>
+		</set>
+		<set>
+			<if test="phone != null">
+				PHONE = #{phone},
+			</if>
+		</set>
+		<set>
+			<if test="loginName != null">
+				LOGIN_NAME = #{loginName},
+			</if>
+		</set>
+		<set>
+			<if test="password != null">
+				PASSWORD = #{password},
+			</if>
+		</set>
+		<set>
+			<if test="lastLoginName != null">
+				LAST_LOGIN_DATE = #{lastLoginName},
+			</if>
+		</set>
+		<set>
+			<if test="isLocked != null">
+				IS_LOCKED = #{isLocked},
+			</if>
+		</set>
+		<set>
+			<if test="isAdmin != null">
+				IS_ADMIN = #{isAdmin},
+			</if>
+		</set>
+		<set>
+			<if test="createDate != null">
+				CREATE_DATE = #{createDate},
+			</if>
+		</set>
+		<set>
+			<if test="lastModifiedDate != null">
+				LAST_MODIFIED_DATE = #{lastModifiedDate},
+			</if>
+		</set>
+		WHERE ID = #{id}
+	</update >
+	
+</mapper>
